@@ -1,21 +1,34 @@
 # Install packages
 install.packages("ggplot2")
+install.packages("tidyverse")
 
 # Libraries
 library(ggplot2)
+library(tidyr)
+library(dplyr)
 
 # Read data
+Aroclor <- read.csv("Data/Frame1996.csv", header = TRUE, check.names = F)
 
-Aroclor <- read.csv("Data/Frame1996.csv", head = TRUE)
-
-# look data
+# Look at data
 head(Aroclor)
 str(Aroclor)
 
-# Bar plot
+# Change format
+Aroclor.2 <- Aroclor %>%
+  pivot_longer(
+    cols = -c(CASRN, `PCB#`),
+              names_to = "Aroclor",
+              values_to = "Value"
+  )
 
-ggplot(Aroclor, aes(x = PCB., y = Aroclor.1221.A1)) +
-  geom_bar() +
+# Need to organize the PCB names
+Aroclor.2$`PCB#` <- factor(Aroclor.2$`PCB#`,
+                               levels = unique(Aroclor.2$`PCB#`))
+
+# Plot PCB profile
+ggplot(Aroclor.2, aes(x = `PCB#`, y = Value, fill = "Aroclor 1016 A2")) +
+  geom_col() +
   xlab("") +
   theme_classic() +
   theme(aspect.ratio = 4/16) +
@@ -26,6 +39,3 @@ ggplot(Aroclor, aes(x = PCB., y = Aroclor.1221.A1)) +
         axis.text.x=element_blank(),
         axis.ticks.x=element_blank())
 
-
-  
-  # Hi
